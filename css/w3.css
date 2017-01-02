@@ -462,3 +462,17 @@ div#console{
 	background: rgba(52,12,90,0.8); 
 	color: rgba(255,255,255,0.9); 
 }
+
+.modal-header {
+    padding:9px 15px;
+    border-bottom:1px solid #eee;
+    color: #ffffff;
+    background-color: #337ab7;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+     border-top-left-radius: 5px;
+     border-top-right-radius: 5px;
+     border-color:#337ab7;
+ }

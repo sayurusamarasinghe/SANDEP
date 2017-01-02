@@ -39,8 +39,8 @@
 <body> 
 
     <!-- Profile Modal -->
-    <div class="modal fade" id="profile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade modal_profile" id="profile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" id="modal-dialog_profile">
             <div class="modal-content">
                 <?php
                 if (isset($_SESSION['email'])) {
@@ -113,6 +113,82 @@
             </div>
         </div>
     </div>
+    
+    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#neighbor_selector">Open Modal</button>
+    <!-- Neighbour Selector Modal -->
+    <div class="modal fade modal_neighbor_selector" id="neighbor_selector" role="dialog">
+        <div class="modal-dialog" id="modal-dialog_neighbor_selector">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Select <span class="highlight">Neighbour</span> Node</h4>
+                </div>
+                <div class="modal-body">
+
+                    <form class="form-horizontal" id="neighbor_selector_form">
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-3" for="ns_country">Country :</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" id="ns_country" name="ns_country">
+                                    <option disabled selected>Select a country</option>
+                                    <?php
+                                    $query = $conn->select("country_list", "*", "Country_Code IN (SELECT Country FROM subscriptions WHERE Email='" . $_SESSION['email'] . "')");
+                                    while ($record = $conn->fetch_assoc($query)) {
+                                        echo "<option value='" . $record['Country_Code'] . "'>" . $record['Country_Name'] . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-3" for="ns_city">City :</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" id="ns_city" name="ns_city">
+                                    <option disabled selected>Select a city</option>
+                                </select>
+                            </div>  
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-3" for="ns_location">Location :</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" id="ns_location" name="ns_location">
+                                    <option disabled selected>Select a location</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-3" for="ns_building">Building :</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" id="ns_building" name="ns_building">
+                                    <option disabled selected>Select a building</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-3" for="ns_node">Node :</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" id="ns_node" name="ns_node">
+                                    <option disabled selected>Select a node</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="btn_select_neighbor">Select this node as the neighbor</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
     <div class="w3-container w3-padding-64 w3-indigo bg-image2" id="us" style="min-height:86%">
         <div class="w3-content-full-width">
@@ -120,7 +196,7 @@
             <br/>
             <table width="100%" class="w3-text-black">
                 <tr>
-                    <td style="padding: 10px;" valign="top" width="35%">
+                    <td style="padding: 10px;" valign="top" width="25%">
 
                         <div class="panel panel-primary" style="background-color: rgba(245, 245, 245, 0.3);">
                             <div class="panel-heading">Node Selection</div>
@@ -196,77 +272,101 @@
                             </div>
                         </div>
                     </td>
-                    <td style="padding: 10px;" valign="top" width="40%">
+                    <td style="padding: 10px;" valign="top" width="45%">
                         <div class="panel panel-primary" style="background-color: rgba(245, 245, 245, 0.3);">
                             <div class="panel-heading">Node Configuration</div>
                             <div class="panel-body">
                                 <form class="form-horizontal" action="analysis.php" method="POST" id="main-form">
 
-                                    <div class="form-group">
-                                        <label class="control-label col-sm-3" for="node_tranceiver_main">Main Transceiver :</label>
-                                        <div class="col-sm-9">
-                                            <select class="form-control" id="node_tranceiver_main" name="node_tranceiver_main">
-                                                <option disabled selected>Select a transceiver</option>
-                                                <option>Bluetooth Low Energy (BLE)</option>
-                                                <option>Wifi Direct</option>
-                                                <option>LoRa</option>
-                                                <option>XBee</option>
-                                            </select>
-                                        </div>  
-                                    </div>
-
                                     <div id="form_content">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3" for="gateway_ssid">Gateway SSID :</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" id="gateway_ssid" name="gateway_ssid">
+                                            </div>  
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3" for="gateway_password">Gateway Password :</label>
+                                            <div class="col-sm-9">
+                                                <input type="password" class="form-control" id="gateway_password" name="gateway_password">
+                                            </div>  
+                                        </div>
+                                        
                                         <div class='form-group'>
                                             <label class='control-label col-sm-3' for='node_tranceiver_1'>Transceiver 1 :</label>
-                                            <div class='col-sm-9'>
+                                            <div class='col-sm-3'>
                                                 <select class='form-control' id='node_tranceiver_1' name='node_main_tranceiver_1'>
                                                     <option disabled selected>Select a transceiver</option>
-                                                    <option value='ble'>Bluetooth Low Energy (BLE)</option>
-                                                    <option value='wifi'>Wifi Direct</option>
+                                                    <option value='ble'>BLE</option>
+                                                    <option value='wifi'>Wifi</option>
                                                     <option value='lora'>LoRa</option>
                                                     <option value='xbee'>XBee</option>
                                                     <option value='none'>None</option>
                                                 </select>
+                                            </div>
+                                            <div class='col-sm-3'>
+                                                <input type="number" class="form-control" id="node_tranceiver_1_neighbor_1" name="node_tranceiver_1_neighbor_1" placeholder="Neighbour I - ID" min="0"/>
+                                            </div>
+                                             <div class='col-sm-3'>
+                                                <input type="number" class="form-control" id="node_tranceiver_1_neighbor_2" name="node_tranceiver_1_neighbor_2" placeholder="Neighbour II - ID" min="0"/>
                                             </div>
                                         </div>
                                         <div class='form-group'>
                                             <label class='control-label col-sm-3' for='node_tranceiver_2'>Transceiver 2 :</label>
-                                            <div class='col-sm-9'>
+                                            <div class='col-sm-3'>
                                                 <select class='form-control' id='node_tranceiver_2' name='node_main_tranceiver_2'>
                                                     <option disabled selected>Select a transceiver</option>
-                                                    <option value='ble'>Bluetooth Low Energy (BLE)</option>
-                                                    <option value='wifi'>Wifi Direct</option>
-                                                    <option value='lora'>LoRa</option>
-                                                    <option value='xbee'>XBee</option>
-                                                    <option value='none'>None</option>
-                                                </select>
-                                            </div>  
-                                        </div>
-                                        <div class='form-group'>
-                                            <label class='control-label col-sm-3' for='node_tranceiver_3'>Transceiver 3 :</label>
-                                            <div class='col-sm-9'>
-                                                <select class='form-control' id='node_tranceiver_3' name='node_main_tranceiver_3'>
-                                                    <option disabled selected>Select a transceiver</option>
-                                                    <option value='ble'>Bluetooth Low Energy (BLE)</option>
-                                                    <option value='wifi'>Wifi Direct</option>
+                                                    <option value='ble'>BLE</option>
+                                                    <option value='wifi'>Wifi</option>
                                                     <option value='lora'>LoRa</option>
                                                     <option value='xbee'>XBee</option>
                                                     <option value='none'>None</option>
                                                 </select>
                                             </div>
+                                            <div class='col-sm-3'>
+                                                <input type="number" class="form-control" id="node_tranceiver_2_neighbor_1" name="node_tranceiver_2_neighbor_1" placeholder="Neighbour I - ID" min="0"/>
+                                            </div>
+                                             <div class='col-sm-3'>
+                                                <input type="number" class="form-control" id="node_tranceiver_2_neighbor_2" name="node_tranceiver_2_neighbor_2" placeholder="Neighbour II - ID" min="0"/>
+                                            </div>
                                         </div>
                                         <div class='form-group'>
-                                            <label class='control-label col-sm-3' for='node_tranceiver_4'>Transceiver 4 :</label>
-                                            <div class='col-sm-9'>"+
-                                                <select class='form-control' id='node_tranceiver_4' name='node_main_tranceiver_4'>
+                                            <label class='control-label col-sm-3' for='node_tranceiver_3'>Transceiver 3 :</label>
+                                            <div class='col-sm-3'>
+                                                <select class='form-control' id='node_tranceiver_3' name='node_main_tranceiver_3'>
                                                     <option disabled selected>Select a transceiver</option>
-                                                    <option value='ble'>Bluetooth Low Energy (BLE)</option>
-                                                    <option value='wifi'>Wifi Direct</option>
+                                                    <option value='ble'>BLE</option>
+                                                    <option value='wifi'>Wifi</option>
                                                     <option value='lora'>LoRa</option>
                                                     <option value='xbee'>XBee</option>
                                                     <option value='none'>None</option>
                                                 </select>
-                                            </div>  
+                                            </div>
+                                            <div class='col-sm-3'>
+                                                <input type="number" class="form-control" id="node_tranceiver_3_neighbor_1" name="node_tranceiver_3_neighbor_1" placeholder="Neighbour I - ID" min="0"/>
+                                            </div>
+                                             <div class='col-sm-3'>
+                                                <input type="number" class="form-control" id="node_tranceiver_3_neighbor_2" name="node_tranceiver_3_neighbor_2" placeholder="Neighbour II - ID" min="0"/>
+                                            </div>
+                                        </div>
+                                        <div class='form-group'>
+                                            <label class='control-label col-sm-3' for='node_tranceiver_4'>Transceiver 4 :</label>
+                                            <div class='col-sm-3'>
+                                                <select class='form-control' id='node_tranceiver_4' name='node_main_tranceiver_4'>
+                                                    <option disabled selected>Select a transceiver</option>
+                                                    <option value='ble'>BLE</option>
+                                                    <option value='wifi'>Wifi</option>
+                                                    <option value='lora'>LoRa</option>
+                                                    <option value='xbee'>XBee</option>
+                                                    <option value='none'>None</option>
+                                                </select>
+                                            </div> 
+                                            <div class='col-sm-3'>
+                                                <input type="number" class="form-control" id="node_tranceiver_4_neighbor_1" name="node_tranceiver_4_neighbor_1" placeholder="Neighbour I - ID" min="0"/>
+                                            </div>
+                                             <div class='col-sm-3'>
+                                                <input type="number" class="form-control" id="node_tranceiver_4_neighbor_2" name="node_tranceiver_4_neighbor_2" placeholder="Neighbour II - ID" min="0"/>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>
@@ -283,21 +383,14 @@
                             </div>
                         </div>
                     </td>
-                    <td style="padding: 10px;" valign="top" width="25%">
-                        <div class="panel panel-primary" style="background-color: rgba(245, 245, 245, 0.3);">
-                            <div class="panel-heading">Node Configuration</div>
+                    <td style="padding: 10px;" valign="top" width="30%">
+                        <div class="panel panel-primary" id="node_summary" style="background-color: rgba(245, 245, 245, 0.3);">
+                            <div class="panel-heading">Node Summary</div>
                             <div class="panel-body">
                                 
                             </div>
                             <div class="panel-footer">Selected Sensor - 
-                                <?php
-                                if (isset($_POST['country']) && isset($_POST['city']) && isset($_POST['location']) && isset($_POST['building']) && isset($_POST['node']) && isset($_POST['sensor'])) {
-                                    $record = $conn->select_record("sensor_list", "Sensor_Name", "Sensor_Code='" . $_POST['sensor'] . "'");
-                                    echo $record['Sensor_Name'];
-                                } else {
-                                    echo "Sensor not yet selected";
-                                }
-                                ?>	
+                                
                             </div>
                         </div>
                     </td>  
@@ -337,12 +430,24 @@
         if(!$('#checkbox_type_2').is(':checked')){
             $('#form_content').html(
                 "<div class='form-group'>"+
+                    "<label class='control-label col-sm-3' for='gateway_ssid'>Gateway SSID :</label>"+
+                    "<div class='col-sm-9'>"+
+                        "<input type='text' class='form-control' id='gateway_ssid' name='gateway_ssid'>"+
+                    "</div>"+  
+                "</div>"+  
+                "<div class='form-group'>"+
+                    "<label class='control-label col-sm-3' for='gateway_password'>Gateway Password :</label>"+
+                    "<div class='col-sm-9'>"+
+                        "<input type='password' class='form-control' id='gateway_password' name='gateway_password'>"+
+                    "</div>"+  
+                "</div>"+  
+                "<div class='form-group'>"+
                     "<label class='control-label col-sm-3' for='node_tranceiver_1'>Transceiver 1 :</label>"+
                     "<div class='col-sm-9'>"+
                         "<select class='form-control' id='node_tranceiver_1' name='node_main_tranceiver_1'>"+
                             "<option disabled selected>Select a transceiver</option>"+
-                            "<option value='ble'>Bluetooth Low Energy (BLE)</option>"+
-                            "<option value='wifi'>Wifi Direct</option>"+
+                            "<option value='ble'>BLE</option>"+
+                            "<option value='wifi'>WiFi</option>"+
                             "<option value='lora'>LoRa</option>"+
                             "<option value='xbee'>XBee</option>"+
                             "<option value='none'>None</option>"+
@@ -354,8 +459,8 @@
                     "<div class='col-sm-9'>"+
                         "<select class='form-control' id='node_tranceiver_2' name='node_main_tranceiver_2'>"+
                             "<option disabled selected>Select a transceiver</option>"+
-                            "<option value='ble'>Bluetooth Low Energy (BLE)</option>"+
-                            "<option value='wifi'>Wifi Direct</option>"+
+                            "<option value='ble'>BLE</option>"+
+                            "<option value='wifi'>WiFi</option>"+
                             "<option value='lora'>LoRa</option>"+
                             "<option value='xbee'>XBee</option>"+
                             "<option value='none'>None</option>"+
@@ -367,8 +472,8 @@
                     "<div class='col-sm-9'>"+
                         "<select class='form-control' id='node_tranceiver_3' name='node_main_tranceiver_3'>"+
                             "<option disabled selected>Select a transceiver</option>"+
-                            "<option value='ble'>Bluetooth Low Energy (BLE)</option>"+
-                            "<option value='wifi'>Wifi Direct</option>"+
+                            "<option value='ble'>BLE</option>"+
+                            "<option value='wifi'>WiFi</option>"+
                             "<option value='lora'>LoRa</option>"+
                             "<option value='xbee'>XBee</option>"+
                             "<option value='none'>None</option>"+
@@ -380,8 +485,8 @@
                     "<div class='col-sm-9'>"+
                         "<select class='form-control' id='node_tranceiver_4' name='node_main_tranceiver_4'>"+
                             "<option disabled selected>Select a transceiver</option>"+
-                            "<option value='ble'>Bluetooth Low Energy (BLE)</option>"+
-                            "<option value='wifi'>Wifi Direct</option>"+
+                            "<option value='ble'>BLE</option>"+
+                            "<option value='wifi'>WiFi</option>"+
                             "<option value='lora'>LoRa</option>"+
                             "<option value='xbee'>XBee</option>"+
                             "<option value='none'>None</option>"+
@@ -392,6 +497,20 @@
         }
         else{
             $('#form_content').html(
+                    
+                "<div class='form-group'>"+
+                    "<label class='control-label col-sm-3' for='node_tranceiver_main'>Main Transceiver :</label>"+
+                    "<div class='col-sm-9'>"+
+                        "<select class='form-control' id='node_tranceiver_main' name='node_tranceiver_main'>"+
+                            "<option disabled selected>Select a transceiver</option>"+
+                            "<option>BLE</option>"+
+                            "<option>WiFi</option>"+
+                            "<option>LoRa</option>"+
+                            "<option>XBee</option>"+
+                        "</select>"+
+                    "</div>"+  
+                "</div>"+
+                
                 "<div class='form-group'>"+
                     "<label class='control-label col-sm-3' for='node_perceptor_1_type'>Perceptor 1 :</label>"+
                     "<div class='col-sm-4'>"+
@@ -517,21 +636,33 @@ $('.sensor_count').each(function() {
 });
 
 $(function() {
-    function reposition() {
+    function reposition_profile() {
         var modal = $(this),
-            dialog = modal.find('.modal-dialog');
+        dialog = modal.find('#modal-dialog_profile');
         modal.css('display', 'block');
         
         // Dividing by two centers the modal exactly, but dividing by three 
         // or four works better for larger screens.
         dialog.css("margin-top", Math.max(0, ($(window).height() - dialog.height() - $('.w3-navbar').height()*2)));
-		dialog.css("margin-left", 10);
+	dialog.css("margin-left", 10); console.log("XXX");
     }
+    
+    function reposition_neighbor_selector() {
+        var modal = $(this),
+        dialog = modal.find('#modal-dialog_neighbor_selector');
+        modal.css('display', 'block');
+        dialog.css("margin-top", $('#node_summary').offset().top); console.log($('#node_summary').offset().top);
+	dialog.css("margin-left", $('#node_summary').offset().left); console.log($('#node_summary').offset().left);
+        dialog.css("width", "auto");
+    }
+    
     // Reposition when a modal is shown
-    $('.modal').on('show.bs.modal', reposition);
+    $('.modal_profile').on('show.bs.modal', reposition_profile);
+    $('.modal_neighbor_selector').on('show.bs.modal', reposition_neighbor_selector);
     // Reposition when the window is resized
     $(window).on('resize', function() {
-        $('.modal:visible').each(reposition);
+        $('.modal_profile:visible').each(reposition_profile);
+        $('.modal_neighbor_selector:visible').each(reposition_neighbor_selector);
     });
 });
 
@@ -586,9 +717,71 @@ $(document).ready(function(){
 		$("#analyze").prop('disabled', false);
 		$("#publish").prop('disabled', false);
 	});
+        
+        // Neighbour Selector part
+        
+        $("#ns_country").change(function(){
+        $.post("ajax/analysis_city_list.php", {country: $("#ns_country").val()}, function(data){
+			$("#ns_city").html(data); 
+		});
+		$("#btn_select_neighbor").prop('disabled', true);
+    });
+	
+	$("#ns_city").change(function(){
+        $.post("ajax/analysis_location_list.php", {country: $("#ns_country").val(), city: $("#ns_city").val()}, function(data){
+			$("#ns_location").html(data); 
+		});
+		$("#analyze").prop('disabled', true);
+		$("#publish").prop('disabled', true);
+    });
+	
+	$("#ns_location").change(function(){
+        $.post("ajax/analysis_building_list.php", {country: $("#ns_country").val(), city: $("#ns_city").val(), location: $("#location").val()}, function(data){
+			$("#ns_building").html(data); 
+		});
+		$("#analyze").prop('disabled', true);
+		$("#publish").prop('disabled', true);
+    });
+	
+	$("#ns_building").change(function(){
+        $.post("ajax/analysis_node_list.php", {country: $("#ns_country").val(), city: $("#ns_city").val(), location: $("#ns_location").val(), building: $("#ns_building").val()}, function(data){
+			$("#ns_node").html(data); 
+		});
+		$("#analyze").prop('disabled', true);
+		$("#publish").prop('disabled', true);
+    });
+	
+	$("#ns_node").change(function(){
+        $.post("ajax/analysis_sensor_list.php", {country: $("#ns_country").val(), city: $("#ns_city").val(), location: $("#ns_location").val(), building: $("#ns_building").val(), node: $("#ns_node").val()}, function(data){
+			$("#ns_sensor").html(data);
+			//console.log(data);
+		});
+		$("#analyze").prop('disabled', true);
+		$("#publish").prop('disabled', true);
+    });
+	
+	$('.disabled').click(function(e){
+		e.preventDefault();
+	});
+	
+	$("#ns_sensor").change(function(){
+		$("#analyze").prop('disabled', false);
+		$("#publish").prop('disabled', false);
+	});
 	
 });
-	
+
+$(function(){
+    var tranceiver_number = 1;
+    var neighbor_number = 1;
+    
+    function change_neighbor_selection(i, j){
+        tranceiver_number = i;
+        neighbor_number = j;
+        $("#modal-dialog_neighbor_selector").modal("show");
+    }
+
+});
 </script>
 </html>
 
